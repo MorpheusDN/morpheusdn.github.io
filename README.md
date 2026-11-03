@@ -121,15 +121,6 @@ The site is fully static — any host that serves a folder works (Cloudflare Pag
 
 Cloudflare reads the Node version from `.node-version` and pnpm from `package.json`. Every push to `main` ships a new version.
 
-## Submitting to Astro Themes
-
-Grimorio is ready to list on [astro.build/themes](https://astro.build/themes). Before you submit:
-
-1. Deploy it somewhere public and put that URL in the README and in `package.json` (`homepage`).
-2. Add a preview screenshot to the repo (a `1200×630` image works well).
-3. Make sure the repo is public and keeps the `LICENSE` file.
-4. Submit through the form linked at the top of [astro.build/themes](https://astro.build/themes).
-
 ## Credits
 
 Grimorio is based on [Kanade-Astro](https://github.com/sudoriaa/Kanade-Astro) by sudoriaa, reworked and extended (design, i18n defaults, content, and features).
