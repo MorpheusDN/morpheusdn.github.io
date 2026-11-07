@@ -6,6 +6,7 @@ lang: en
 category: notes
 tags: ["Markdown", "Writing"]
 featured: false
+draft: false
 ---
 
 This post is a living cheatsheet: it shows how each Markdown element looks in the template. Use it as a reference while you write, and delete it once you no longer need it.

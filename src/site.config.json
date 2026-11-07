@@ -26,7 +26,16 @@
       "en": "Grimorio"
     },
     "handle": "Grimorio",
-    "github": "https://github.com/sud0pls/Grimorio-astro"
+    "github": "https://github.com/sud0pls/Grimorio-astro",
+    "avatar": "src/assets/avatar.jpg",
+    "role": {
+      "en": "Notes & learnings",
+      "es": "Notas y aprendizajes"
+    },
+    "about": {
+      "en": "On this blog I write about what I learn: step-by-step guides, loose notes, and the occasional story worth telling.",
+      "es": "En este blog escribo sobre lo que aprendo: guías paso a paso, notas sueltas y alguna historia que merece contarse."
+    }
   },
   "navigation": [
     {

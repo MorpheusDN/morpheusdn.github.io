@@ -6,6 +6,7 @@ lang: en
 category: stories
 tags: ["Travel", "Life"]
 featured: false
+draft: false
 ---
 
 We left on a Friday afternoon, with just enough light to reach the hut before dark. There was no plan beyond walking, cooking something simple, and going to bed early. Sometimes that's the best plan there is.

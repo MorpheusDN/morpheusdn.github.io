@@ -11,13 +11,16 @@ const posts = defineCollection({
     description: z.string().trim().min(1),
     date: z.coerce.date(),
     // Optional: set when you revise a post so search engines see the update.
-    updated: z.coerce.date().optional(),
+    updated: z.preprocess(
+      (value) => (value === "" || value === null ? undefined : value),
+      z.coerce.date().optional(),
+    ),
     lang: z.enum(languages).default(defaultLanguage),
     category: z.preprocess(
       (value) => (typeof value === "string" ? normalizeCategory(value) : value),
       z.enum(categoryNames),
     ),
-    tags: z.array(z.string().trim().min(1)),
+    tags: z.array(z.string().trim().min(1)).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),

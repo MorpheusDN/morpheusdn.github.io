@@ -6,6 +6,7 @@ lang: en
 category: guides
 tags: ["Astro", "Blogging"]
 featured: true
+draft: false
 ---
 
 If you're reading this, you've just set up **Grimorio**, a blog template built with Astro and designed for writing without fighting the tooling. This post is an example, like the other two that ship with it: delete them whenever you want and start with your own.

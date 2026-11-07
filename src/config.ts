@@ -1,4 +1,4 @@
-import settings from "./site.config.json" with { type: "json" };
+import settings from "./site-settings";
 import {
   localizePath,
   locales,
@@ -18,7 +18,7 @@ export function getSiteInfo(lang: Language) {
     dateLocale: locales[lang],
     favicon: settings.site.favicon,
     description: translate(lang, "site.description"),
-    keywords: settings.site.keywords[lang],
+    keywords: settings.site.keywords?.[lang] ?? [],
     // SITE comes from astro.config.mjs and is shared by all generated metadata.
     url: import.meta.env.SITE,
   };
@@ -38,15 +38,18 @@ export function getPersonalInfo(lang: Language) {
   return {
     name: settings.author.name[lang],
     englishName: settings.author.handle,
-    role: translate(lang, "author.role"),
+    role: settings.author.role[lang],
+    about: settings.author.about[lang],
     github: settings.author.github,
-    socialLinks: settings.socialLinks.map(({ name, label, icon, url }) => ({
-      name: label ? translate(lang, label as TranslationKey) : name,
-      icon,
-      url:
-        url === "$author.github"
-          ? settings.author.github
-          : localizePath(lang, url),
-    })),
+    socialLinks: (settings.socialLinks ?? []).map(
+      ({ name, label, icon, url }) => ({
+        name: label ? translate(lang, label as TranslationKey) : name,
+        icon,
+        url:
+          url === "$author.github"
+            ? settings.author.github
+            : localizePath(lang, url),
+      }),
+    ),
   };
 }

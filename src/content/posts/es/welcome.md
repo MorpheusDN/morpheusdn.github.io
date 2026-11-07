@@ -6,6 +6,7 @@ lang: es
 category: guides
 tags: ["Astro", "Blogging"]
 featured: true
+draft: false
 ---
 
 Si estás leyendo esto, acabas de estrenar **Grimorio**, una plantilla de blog hecha con Astro pensada para escribir sin pelearte con la herramienta. Este artículo es de ejemplo, igual que los otros dos que vienen incluidos: bórralos cuando quieras y empieza con lo tuyo.

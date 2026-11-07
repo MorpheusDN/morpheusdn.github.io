@@ -6,6 +6,7 @@ lang: es
 category: stories
 tags: ["Viajes", "Vida"]
 featured: false
+draft: false
 ---
 
 Salimos un viernes por la tarde, con la luz justa para llegar al refugio antes de que se hiciera de noche. No había plan más allá de caminar, cocinar algo sencillo y dormir temprano. A veces ese es el mejor plan.

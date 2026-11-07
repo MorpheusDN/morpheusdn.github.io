@@ -6,6 +6,7 @@ lang: es
 category: notes
 tags: ["Markdown", "Writing"]
 featured: false
+draft: false
 ---
 
 Este artículo es una chuleta viva: muestra cómo se ve cada elemento de Markdown en la plantilla. Úsalo como referencia mientras escribes y bórralo cuando ya no lo necesites.

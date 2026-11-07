@@ -1,4 +1,4 @@
-import settings from "../site.config.json" with { type: "json" };
+import settings from "../site-settings";
 import es from "./es.json" with { type: "json" };
 import en from "./en.json" with { type: "json" };
 
@@ -41,7 +41,7 @@ export function translate(
   values: Record<string, string | number> = {},
 ): string {
   const dictionary: Dictionary = dictionaries[lang];
-  const overrides = settings.text[lang] as Partial<Dictionary>;
+  const overrides = settings.text?.[lang] ?? {};
   const singularKey = `${key}.one` as TranslationKey;
   const selectedKey =
     typeof values.count === "number" &&

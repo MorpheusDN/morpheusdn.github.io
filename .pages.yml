@@ -1,0 +1,367 @@
+# https://pagescms.org/docs/configuration/
+# Keep content in Git; GitHub Actions publishes changes saved to main.
+media:
+  - name: covers
+    label: 文章图片
+    input: public/covers
+    output: /covers
+    extensions: [jpg, jpeg, png, webp, avif, gif, svg]
+    rename: random
+  - name: avatars
+    label: 头像
+    input: src/assets
+    output: src/assets
+    extensions: [jpg, jpeg, png, webp, avif]
+    rename: random
+
+settings:
+  content:
+    # Preserve existing settings and frontmatter that the forms do not expose.
+    merge: true
+
+components:
+  localized-text:
+    type: object
+    required: true
+    fields:
+      - name: en
+        label: 英语版（默认站点）
+        type: text
+        required: true
+        pattern: '\S'
+      - name: es
+        label: 西班牙语版
+        type: text
+        required: true
+        pattern: '\S'
+  post-title:
+    label: 标题
+    type: string
+    required: true
+    pattern: '\S'
+  post-description:
+    label: 摘要
+    type: text
+    required: true
+    pattern: '\S'
+    description: 用于搜索结果、文章列表和社交分享。
+  post-date:
+    label: 发布日期
+    type: date
+    required: true
+    options:
+      format: yyyy-MM-dd
+  post-updated:
+    label: 最近更新
+    type: date
+    default: ""
+    description: 可留空；修改旧文章时填写。
+    options:
+      format: yyyy-MM-dd
+  post-category:
+    label: 分类
+    type: select
+    required: true
+    default: notes
+    options:
+      values:
+        - value: guides
+          label: 指南（guides）
+        - value: notes
+          label: 笔记（notes）
+        - value: stories
+          label: 随笔（stories）
+  post-tags:
+    label: 标签
+    type: string
+    list: true
+    default: []
+    pattern: '\S'
+  post-featured:
+    label: 首页推荐
+    type: boolean
+    default: false
+  post-draft:
+    label: 草稿
+    type: boolean
+    default: true
+    description: 开启时不会出现在公开网站；准备发布时关闭。
+  post-body:
+    label: 正文
+    type: rich-text
+    options:
+      format: markdown
+      media: covers
+      switcher: true
+
+content:
+  - name: posts-en
+    label: 文章 · 默认站点
+    type: collection
+    path: src/content/posts/en
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      fields: [title, date, category, draft]
+      primary: title
+      sort: [date, title]
+      search: [title, description, tags]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        component: post-title
+      - name: description
+        component: post-description
+      - name: date
+        component: post-date
+      - name: updated
+        component: post-updated
+      - name: lang
+        type: string
+        default: en
+        hidden: true
+      - name: category
+        component: post-category
+      - name: tags
+        component: post-tags
+      - name: featured
+        component: post-featured
+      - name: draft
+        component: post-draft
+      - name: body
+        component: post-body
+
+  - name: posts-es
+    label: 文章 · 西班牙语版
+    type: collection
+    path: src/content/posts/es
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      fields: [title, date, category, draft]
+      primary: title
+      sort: [date, title]
+      search: [title, description, tags]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        component: post-title
+      - name: description
+        component: post-description
+      - name: date
+        component: post-date
+      - name: updated
+        component: post-updated
+      - name: lang
+        type: string
+        default: es
+        hidden: true
+      - name: category
+        component: post-category
+      - name: tags
+        component: post-tags
+      - name: featured
+        component: post-featured
+      - name: draft
+        component: post-draft
+      - name: body
+        component: post-body
+
+  - name: site
+    label: 站点与个人资料
+    type: file
+    path: src/site.config.json
+    format: json
+    fields:
+      - name: site
+        label: 站点信息
+        type: object
+        required: true
+        fields:
+          - name: name
+            label: 博客名称
+            type: string
+            required: true
+            pattern: '\S'
+          - name: logoText
+            label: 导航栏名称
+            type: string
+            required: true
+            pattern: '\S'
+          - name: favicon
+            label: 网站图标路径
+            type: string
+            required: true
+            description: 例如 /favicon.ico，也可以填写已上传图片的 /covers/... 路径。
+            pattern: '^/[^\s]*$'
+          - name: keywords
+            label: 搜索关键词
+            type: object
+            fields:
+              - name: en
+                label: 默认站点
+                type: string
+                list: true
+                default: []
+              - name: es
+                label: 西班牙语版
+                type: string
+                list: true
+                default: []
+      - name: author
+        label: 个人资料
+        type: object
+        required: true
+        fields:
+          - name: name
+            label: 显示名称
+            component: localized-text
+          - name: handle
+            label: 用户名
+            type: string
+            required: true
+            pattern: '\S'
+          - name: github
+            label: GitHub 主页
+            type: string
+            required: true
+            pattern: '^https://github\.com/[^\s]+$'
+          - name: avatar
+            label: 头像
+            type: image
+            required: true
+            options:
+              media: avatars
+          - name: role
+            label: 个人签名
+            component: localized-text
+          - name: about
+            label: 关于我
+            component: localized-text
+            description: 显示在关于页面；使用纯文本填写。
+      - name: navigation
+        label: 导航菜单
+        type: object
+        required: true
+        list:
+          min: 1
+          collapsible:
+            summary: "{label} → {url}"
+        fields:
+          - name: label
+            label: 菜单名称
+            type: select
+            required: true
+            options:
+              values:
+                - value: nav.home
+                  label: 首页
+                - value: nav.posts
+                  label: 文章
+                - value: nav.projects
+                  label: 项目
+                - value: nav.about
+                  label: 关于
+          - name: url
+            label: 页面路径
+            type: string
+            required: true
+            description: 例如 /、/posts/、/projects/、/about/。
+            pattern: '^/[^\s]*$'
+      - name: socialLinks
+        label: 社交链接
+        type: object
+        list:
+          collapsible:
+            summary: "{name}"
+        fields:
+          - name: name
+            label: 名称
+            type: string
+            required: true
+          - name: label
+            label: 多语言名称
+            type: select
+            default: ""
+            description: 普通自定义链接留空即可。
+            options:
+              values:
+                - value: common.rss
+                  label: RSS 订阅
+          - name: icon
+            label: 图标
+            type: select
+            required: true
+            default: icon-[lucide--link]
+            options:
+              values:
+                - value: icon-[simple-icons--github]
+                  label: GitHub
+                - value: icon-[lucide--rss]
+                  label: RSS
+                - value: icon-[lucide--mail]
+                  label: 邮箱
+                - value: icon-[lucide--link]
+                  label: 链接
+          - name: url
+            label: 链接地址
+            type: string
+            required: true
+            description: 支持 https://、mailto:、站内 / 路径；$author.github 自动使用上方 GitHub 主页。
+            pattern: '^(https://[^\s]+|mailto:[^\s]+|/[^\s]*|\$author\.github)$'
+
+  - name: projects
+    label: 项目展示
+    type: file
+    path: src/data/projects.json
+    format: json
+    list: true
+    fields:
+      - name: name
+        label: 项目名称
+        type: string
+        required: true
+        pattern: '\S'
+      - name: description
+        label: 项目简介
+        component: localized-text
+      - name: url
+        label: 项目地址
+        type: string
+        required: true
+        pattern: '^https://[^\s]+$'
+      - name: icon
+        label: 图标
+        type: select
+        required: true
+        default: icon-[lucide--code]
+        options:
+          values:
+            - value: icon-[simple-icons--astro]
+              label: Astro
+            - value: icon-[simple-icons--github]
+              label: GitHub
+            - value: icon-[lucide--code]
+              label: 代码
+            - value: icon-[lucide--globe]
+              label: 网站
+            - value: icon-[lucide--folder]
+              label: 文件夹
+      - name: tech
+        label: 技术栈
+        type: string
+        list: true
+        default: []
+      - name: status
+        label: 项目状态
+        component: localized-text

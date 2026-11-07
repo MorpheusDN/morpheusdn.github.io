@@ -61,17 +61,19 @@ public/               Favicons, fonts, static SVGs
 
 Everything you'll normally touch lives in a handful of files:
 
-| What                          | Where                                                 |
-| ----------------------------- | ----------------------------------------------------- |
-| Site name, author, nav, links | `src/site.config.json`                                |
-| All interface text            | `src/i18n/es.json`, `src/i18n/en.json`                |
-| Avatar                        | `src/assets/avatar.jpg` (optimized WebP is generated) |
-| Theme colors                  | `src/styles/global.css` (`:root` and `:root.dark`)    |
-| Posts                         | `src/content/posts/es/`, `src/content/posts/en/`      |
-| Projects page                 | `src/data/projects.ts`                                |
-| Production domain             | `SITE_URL` in `.env` (see `.env.example`)             |
+| What                          | Where                                                               |
+| ----------------------------- | ------------------------------------------------------------------- |
+| Site name, author, nav, links | `src/site.config.json`                                              |
+| All interface text            | `src/i18n/es.json`, `src/i18n/en.json`                              |
+| Avatar                        | `author.avatar` in `src/site.config.json` (source in `src/assets/`) |
+| Theme colors                  | `src/styles/global.css` (`:root` and `:root.dark`)                  |
+| Posts                         | `src/content/posts/es/`, `src/content/posts/en/`                    |
+| Projects page                 | `src/data/projects.json`                                            |
+| Production domain             | `SITE_URL` in `.env` (see `.env.example`)                           |
 
 After cloning, delete the example posts in `src/content/posts/` and the favicons in `public/` you want to replace, then set your domain so the canonical URLs, feeds, sitemap, and social images point at the right place.
+
+日常写文章、修改个人资料和管理图片可以使用 [Pages CMS](https://app.pagescms.org)，无需启动本地开发环境。首次连接与使用步骤见 [Pages CMS 使用指南](docs/pages-cms.md)。项目展示的数据位于 `src/data/projects.json`，`projects.ts` 只负责按语言读取数据。
 
 ### Writing a post
 

@@ -1,4 +1,5 @@
 import { type Language } from "../i18n";
+import projects from "./projects.json" with { type: "json" };
 
 export interface Project {
   name: string;
@@ -9,20 +10,19 @@ export interface Project {
   status: string;
 }
 
-// Example projects. Replace these with your own, or remove the "Projects"
-// entry from navigation in src/site.config.json if you don't need the page.
+type ProjectData = Omit<Project, "description" | "status" | "tech"> & {
+  description: Record<Language, string>;
+  status: Record<Language, string>;
+  tech?: string[];
+};
+const projectData: ProjectData[] = projects;
+
+// Pages CMS edits the JSON data; this adapter keeps the page's localized shape.
 export function getProjects(lang: Language): Project[] {
-  const es = lang === "es";
-  return [
-    {
-      name: "Grimorio",
-      description: es
-        ? "La plantilla de blog con la que está hecho este sitio: Astro, bilingüe y centrada en el contenido."
-        : "The blog template this site is built with: Astro, bilingual, and content-first.",
-      url: "https://github.com/sud0pls/Grimorio-astro",
-      icon: "icon-[simple-icons--astro]",
-      tech: ["Astro", "Vue", "TypeScript"],
-      status: es ? "Plantilla de ejemplo" : "Example project",
-    },
-  ];
+  return projectData.map((project) => ({
+    ...project,
+    description: project.description[lang],
+    status: project.status[lang],
+    tech: project.tech ?? [],
+  }));
 }

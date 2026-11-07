@@ -1,9 +1,19 @@
 import { getImage } from "astro:assets";
-import avatar from "../assets/avatar.jpg";
+import type { ImageMetadata } from "astro";
+import settings from "../site-settings";
+
+const avatars = import.meta.glob<ImageMetadata>(
+  "../assets/**/*.{jpg,jpeg,png,webp,avif}",
+  { eager: true, import: "default" },
+);
+const avatar = avatars[settings.author.avatar.replace(/^src\//, "../")];
+if (!avatar) {
+  throw new Error(`Avatar not found: ${settings.author.avatar}`);
+}
 
 export type Avatar = { src: string; srcset: string };
 
-// Replace src/assets/avatar.jpg to change the avatar everywhere.
+// Pages CMS stores the selected source path in author.avatar.
 export async function getAvatar(size: number): Promise<Avatar> {
   const [normal, retina] = await Promise.all(
     [1, 2].map((density) =>

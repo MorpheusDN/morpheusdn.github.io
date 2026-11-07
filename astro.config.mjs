@@ -34,15 +34,22 @@ for (const lang of ["es", "en"]) {
   for (const file of readdirSync(dir).filter((name) => name.endsWith(".md"))) {
     const frontmatter = readFileSync(`${dir}/${file}`, "utf8").split("---")[1];
     if (/^draft:\s*true/m.test(frontmatter)) continue;
-    const date =
-      /^updated:\s*(\S+)/m.exec(frontmatter)?.[1] ??
-      /^date:\s*(\S+)/m.exec(frontmatter)?.[1];
+    // CMS date fields may be quoted or empty. Fall back to the publish date
+    // when the optional update date is cleared in the editor.
+    const readDate = (/** @type {string} */ key) => {
+      const value = new RegExp(`^${key}:[ \\t]*([^\\r\\n]*)`, "m")
+        .exec(frontmatter)?.[1]
+        .split(/[ \t]+#/)[0]
+        .trim()
+        .replace(/^(["'])(.*)\1$/, "$2");
+      if (!value) return undefined;
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.valueOf()) ? undefined : parsed;
+    };
+    const date = readDate("updated") ?? readDate("date");
     if (!date) continue;
     const prefix = lang === "en" ? "" : `/${lang}`;
-    lastModified.set(
-      `${prefix}/posts/${file.replace(/\.md$/, "")}/`,
-      new Date(date),
-    );
+    lastModified.set(`${prefix}/posts/${file.replace(/\.md$/, "")}/`, date);
   }
 }
 /** Newest post date for the English ("") or Spanish ("/es/") listings. */
