@@ -338,7 +338,10 @@ a.chip:hover {
   font-size: 17px;
 }
 .prose h2,
-.prose h3 {
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
   font-weight: 600;
   line-height: 1.35;
   margin: 2em 0 0.6em;
@@ -348,7 +351,16 @@ a.chip:hover {
   font-size: 24px;
 }
 .prose h3 {
+  font-size: 22px;
+}
+.prose h4 {
   font-size: 19px;
+}
+.prose h5 {
+  font-size: 18px;
+}
+.prose h6 {
+  font-size: 17px;
 }
 .prose p {
   margin: 1em 0;
