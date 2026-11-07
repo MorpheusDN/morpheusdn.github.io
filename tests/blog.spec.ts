@@ -24,9 +24,9 @@ test("Home categories and URL state after reload", async ({ page }) => {
   await expect(page).toHaveURL(/category=stories/);
   await page.reload();
   await expect(page.locator(".post-card")).toHaveCount(1);
-  await expect(
-    page.locator('.post-card[data-category="stories"]'),
-  ).toHaveCount(1);
+  await expect(page.locator('.post-card[data-category="stories"]')).toHaveCount(
+    1,
+  );
 });
 
 test("Tags, month archives, and an unknown category", async ({ page }) => {
@@ -227,7 +227,9 @@ test("SEO metadata, official sitemap, and RSS consistency", async ({
   page,
   request,
 }) => {
-  await page.goto("/posts/writing-with-markdown/?tracking=example#article-body");
+  await page.goto(
+    "/posts/writing-with-markdown/?tracking=example#article-body",
+  );
   await expect(page.locator("h1")).toHaveCount(1);
   const canonical = await page
     .locator('link[rel="canonical"]')

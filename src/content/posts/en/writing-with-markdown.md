@@ -66,11 +66,11 @@ console.log(greet("world"));
 
 Tables are handy for comparing things at a glance:
 
-| Element | Syntax          | What for?                    |
-| ------- | --------------- | ---------------------------- |
-| Bold    | `**text**`      | Emphasize an idea            |
-| Link    | `[text](url)`   | Point to another page        |
-| Code    | `` `code` ``    | Name a command or a file     |
+| Element | Syntax        | What for?                |
+| ------- | ------------- | ------------------------ |
+| Bold    | `**text**`    | Emphasize an idea        |
+| Link    | `[text](url)` | Point to another page    |
+| Code    | `` `code` ``  | Name a command or a file |
 
 ## Quotes and images
 

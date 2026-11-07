@@ -66,11 +66,11 @@ console.log(saludar("mundo"));
 
 Las tablas son útiles para comparar cosas de un vistazo:
 
-| Elemento   | Sintaxis        | ¿Para qué?                    |
-| ---------- | --------------- | ----------------------------- |
-| Negrita    | `**texto**`     | Resaltar una idea             |
-| Enlace     | `[texto](url)`  | Apuntar a otra página         |
-| Código     | `` `código` ``  | Nombrar un comando o archivo  |
+| Elemento | Sintaxis       | ¿Para qué?                   |
+| -------- | -------------- | ---------------------------- |
+| Negrita  | `**texto**`    | Resaltar una idea            |
+| Enlace   | `[texto](url)` | Apuntar a otra página        |
+| Código   | `` `código` `` | Nombrar un comando o archivo |
 
 ## Citas e imágenes
 

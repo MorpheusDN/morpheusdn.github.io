@@ -32,14 +32,14 @@ pnpm dev
 
 Open <http://localhost:4321>.
 
-| Command         | What it does                                    |
-| --------------- | ----------------------------------------------- |
-| `pnpm dev`      | Start the dev server                            |
-| `pnpm build`    | Type-check, then build to `dist/`               |
-| `pnpm preview`  | Serve the production build locally              |
-| `pnpm check`    | Type-check Astro, Vue, and TypeScript           |
-| `pnpm test`     | Build and run the browser tests                 |
-| `pnpm format`   | Format the codebase with Prettier               |
+| Command        | What it does                          |
+| -------------- | ------------------------------------- |
+| `pnpm dev`     | Start the dev server                  |
+| `pnpm build`   | Type-check, then build to `dist/`     |
+| `pnpm preview` | Serve the production build locally    |
+| `pnpm check`   | Type-check Astro, Vue, and TypeScript |
+| `pnpm test`    | Build and run the browser tests       |
+| `pnpm format`  | Format the codebase with Prettier     |
 
 ## Project structure
 
@@ -61,15 +61,15 @@ public/               Favicons, fonts, static SVGs
 
 Everything you'll normally touch lives in a handful of files:
 
-| What                        | Where                                                    |
-| --------------------------- | -------------------------------------------------------- |
-| Site name, author, nav, links | `src/site.config.json`                                 |
-| All interface text          | `src/i18n/es.json`, `src/i18n/en.json`                   |
-| Avatar                      | `src/assets/avatar.jpg` (optimized WebP is generated)    |
-| Theme colors                | `src/styles/global.css` (`:root` and `:root.dark`)       |
-| Posts                       | `src/content/posts/es/`, `src/content/posts/en/`         |
-| Projects page               | `src/data/projects.ts`                                   |
-| Production domain           | `SITE_URL` in `.env` (see `.env.example`)                |
+| What                          | Where                                                 |
+| ----------------------------- | ----------------------------------------------------- |
+| Site name, author, nav, links | `src/site.config.json`                                |
+| All interface text            | `src/i18n/es.json`, `src/i18n/en.json`                |
+| Avatar                        | `src/assets/avatar.jpg` (optimized WebP is generated) |
+| Theme colors                  | `src/styles/global.css` (`:root` and `:root.dark`)    |
+| Posts                         | `src/content/posts/es/`, `src/content/posts/en/`      |
+| Projects page                 | `src/data/projects.ts`                                |
+| Production domain             | `SITE_URL` in `.env` (see `.env.example`)             |
 
 After cloning, delete the example posts in `src/content/posts/` and the favicons in `public/` you want to replace, then set your domain so the canonical URLs, feeds, sitemap, and social images point at the right place.
 

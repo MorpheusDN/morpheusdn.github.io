@@ -20,32 +20,30 @@ const projects = getProjects(lang);
       <p>{t("projects.description")}</p>
     </div>
     <div class="project-grid">
-      {
-        projects.map((project) => (
-          <a
-            class="project-card"
-            href={project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="project-icon" aria-hidden="true">
-              <span class={project.icon} />
-            </span>
-            <span
-              class="project-arrow icon-[lucide--arrow-up-right]"
-              aria-hidden="true"
-            />
-            <h3>{project.name}</h3>
-            <p>{project.description}</p>
-            <ul class="project-tech" aria-hidden="true">
-              {project.tech.map((item) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-            <span class="project-status">{project.status}</span>
-          </a>
-        ))
-      }
+      {projects.map((project) => (
+        <a
+          class="project-card"
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="project-icon" aria-hidden="true">
+            <span class={project.icon} />
+          </span>
+          <span
+            class="project-arrow icon-[lucide--arrow-up-right]"
+            aria-hidden="true"
+          />
+          <h3>{project.name}</h3>
+          <p>{project.description}</p>
+          <ul class="project-tech" aria-hidden="true">
+            {project.tech.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <span class="project-status">{project.status}</span>
+        </a>
+      ))}
     </div>
   </section>
 </BlogLayout>
