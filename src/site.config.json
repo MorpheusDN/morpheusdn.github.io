@@ -1,7 +1,7 @@
 {
   "site": {
-    "name": "Grimorio",
-    "logoText": "Grimorio",
+    "name": "Morpheus",
+    "logoText": "Morpheus",
     "favicon": "/favicon.ico",
     "keywords": {
       "es": [
@@ -58,7 +58,6 @@
   "socialLinks": [
     {
       "name": "GitHub",
-      "label": "",
       "icon": "icon-[simple-icons--github]",
       "url": "$author.github"
     },
@@ -68,9 +67,5 @@
       "icon": "icon-[lucide--rss]",
       "url": "/rss.xml"
     }
-  ],
-  "text": {
-    "es": {},
-    "en": {}
-  }
+  ]
 }
