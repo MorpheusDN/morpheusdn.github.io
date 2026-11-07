@@ -6,3 +6,8 @@ dist/
 test-results/
 playwright-report/
 pnpm-lock.yaml
+
+# Pages CMS owns serialization of these files. Astro still validates their data.
+src/content/posts/**/*.md
+src/site.config.json
+src/data/projects.json

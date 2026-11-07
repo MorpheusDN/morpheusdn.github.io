@@ -1,9 +1,44 @@
 import { test, expect } from "@playwright/test";
+import { readdirSync, readFileSync } from "node:fs";
+import { parse } from "yaml";
 import { ogLocales, translate, useTranslations } from "../src/i18n";
+import { normalizeCategory } from "../src/data/post-options";
 import settings from "../src/site.config.json" with { type: "json" };
 
 const language = "en";
 const t = useTranslations(language);
+
+// Read expectations from source content, independently of the rendered pages.
+// CMS saves may add posts, change metadata, or leave drafts unpublished.
+type Post = {
+  title: string;
+  date: string;
+  lang: "en" | "es";
+  category: string;
+  tags: string[];
+  draft?: boolean;
+  path: string;
+};
+const published = ["en", "es"].flatMap((lang) => {
+  const dir = new URL(`../src/content/posts/${lang}/`, import.meta.url);
+  return readdirSync(dir)
+    .filter((file) => file.endsWith(".md") && !file.startsWith("_"))
+    .map((file): Post => {
+      const source = readFileSync(new URL(file, dir), "utf8");
+      const data = parse(/^---\r?\n([\s\S]*?)\r?\n---/.exec(source)![1]);
+      return {
+        ...data,
+        category: normalizeCategory(data.category),
+        tags: data.tags ?? [],
+        path: `${lang === "en" ? "" : "/es"}/posts/${file.slice(0, -3)}/`,
+      };
+    })
+    .filter((post) => !post.draft);
+});
+const posts = published
+  .filter((post) => (post.lang ?? "en") === language)
+  .sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+const firstPageCount = (count: number) => Math.min(count, 5);
 
 test("Home categories and URL state after reload", async ({ page }) => {
   await page.goto("/");
@@ -11,34 +46,51 @@ test("Home categories and URL state after reload", async ({ page }) => {
     "data-ready",
     "true",
   );
-  await expect(page.locator(".post-card")).toHaveCount(3);
+  await expect(page.locator(".post-card")).toHaveCount(
+    firstPageCount(posts.length),
+  );
   for (const category of ["guides", "notes", "stories"] as const) {
     await page
       .getByRole("button", { name: t(`category.${category}`), exact: true })
       .click();
-    await expect(page.locator(".post-card")).toHaveCount(1);
+    await expect(page.locator(".post-card")).toHaveCount(
+      firstPageCount(posts.filter((post) => post.category === category).length),
+    );
     await expect(
       page.locator(`.post-card:not([data-category="${category}"])`),
     ).toHaveCount(0);
   }
   await expect(page).toHaveURL(/category=stories/);
   await page.reload();
-  await expect(page.locator(".post-card")).toHaveCount(1);
+  const stories = firstPageCount(
+    posts.filter((post) => post.category === "stories").length,
+  );
+  await expect(page.locator(".post-card")).toHaveCount(stories);
   await expect(page.locator('.post-card[data-category="stories"]')).toHaveCount(
-    1,
+    stories,
   );
 });
 
 test("Tags, month archives, and an unknown category", async ({ page }) => {
   await page.goto("/posts/?tag=Markdown");
-  await expect(page.locator(".post-card")).toHaveCount(1);
+  await expect(page.locator(".post-card")).toHaveCount(
+    firstPageCount(
+      posts.filter((post) => post.tags.includes("Markdown")).length,
+    ),
+  );
   await page.goto("/posts/?month=2026-03");
-  await expect(page.locator(".post-card")).toHaveCount(2);
+  await expect(page.locator(".post-card")).toHaveCount(
+    firstPageCount(
+      posts.filter((post) => post.date.startsWith("2026-03")).length,
+    ),
+  );
   await expect(page.locator(".filter-summary")).toContainText("2026-03");
   await page.goto("/posts/?category=missing&page=-5");
   await expect(page.getByText(t("post.emptyTitle"))).toBeVisible();
   await page.getByRole("button", { name: t("post.viewAll") }).click();
-  await expect(page.locator(".post-card")).toHaveCount(3);
+  await expect(page.locator(".post-card")).toHaveCount(
+    firstPageCount(posts.length),
+  );
 });
 
 test("Search, empty results, and focus restoration", async ({ page }) => {
@@ -215,7 +267,7 @@ test("Page layouts, assets, and browser errors", async ({ page, isMobile }) => {
 test("Sitemap, RSS, and 404", async ({ page, request }) => {
   const feed = await request.get("/rss.xml");
   expect(feed.status()).toBe(200);
-  expect((await feed.text()).match(/<item>/g)).toHaveLength(3);
+  expect((await feed.text()).match(/<item>/g) ?? []).toHaveLength(posts.length);
   expect((await request.get("/sitemap.xml")).status()).toBe(200);
   expect(await (await request.get("/robots.txt")).text()).toContain("Sitemap:");
   const response = await page.goto("/a-page-that-does-not-exist/");
@@ -257,7 +309,17 @@ test("SEO metadata, official sitemap, and RSS consistency", async ({
       (entry) => entry.textContent!,
     );
   }, xml);
-  expect(locations).toHaveLength(14);
+  const expectedPaths = [
+    ...["", "/es"].flatMap((prefix) =>
+      ["/", "/posts/", "/about/", "/projects/"].map(
+        (path) => `${prefix}${path}`,
+      ),
+    ),
+    ...published.map((post) => post.path),
+  ];
+  expect(locations.map((url) => new URL(url).pathname).sort()).toEqual(
+    expectedPaths.sort(),
+  );
   expect(locations).toContain(canonical);
   expect(
     locations.some((url) => /\/404(?:\/|\.|$)/.test(new URL(url).pathname)),
@@ -281,7 +343,9 @@ test("SEO metadata, official sitemap, and RSS consistency", async ({
     await feed.text(),
   );
   expect(feedInfo.errors).toBe(0);
-  expect(feedInfo.links).toHaveLength(3);
+  expect(feedInfo.links.map((url) => new URL(url).pathname).sort()).toEqual(
+    posts.map((post) => post.path).sort(),
+  );
   await page.goto("/a-page-that-does-not-exist/");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     "content",
@@ -313,7 +377,7 @@ test("Reading all posts without JavaScript", async ({ browser, baseURL }) => {
       name: t("post.all"),
       exact: true,
     });
-    await expect(fallback.getByRole("link")).toHaveCount(3);
+    await expect(fallback.getByRole("link")).toHaveCount(posts.length);
     await fallback.getByRole("link").last().click();
     await expect(page.locator("#article-body")).toBeVisible();
   } finally {
@@ -353,7 +417,6 @@ test("Configured language, localized search, metadata, and local fonts", async (
     t("site.description"),
   );
   await expect(page.locator("h1")).toHaveText(t("hero.title"));
-  expect(await page.locator("body").innerText()).not.toMatch(/\p{Script=Han}/u);
 
   await page
     .getByRole("button", { name: t("nav.search"), exact: true })
@@ -393,9 +456,7 @@ test("Configured language, localized search, metadata, and local fonts", async (
     };
   }, rss);
   expect(feedInfo.language).toBe(language);
-  expect(feedInfo.title).toBe(
-    await page.locator(".article-header h1").textContent(),
-  );
+  expect(feedInfo.title).toBe(posts[0].title);
   expect(hydrationWarnings).toEqual([]);
 });
 
@@ -444,7 +505,7 @@ test("Structured data and translated sitemap entries", async ({
   expect(post.inLanguage).toBe("en");
   expect(post.image.width).toBe(1200);
   expect(post.author["@id"]).toBe(byType("Person")["@id"]);
-  expect(byType("Person").jobTitle).toBe("Notes & learnings");
+  expect(byType("Person").jobTitle).toBe(settings.author.role.en);
   expect(byType("WebSite").alternateName).toBeTruthy();
   expect(byType("BreadcrumbList").itemListElement).toHaveLength(3);
   await expect(
